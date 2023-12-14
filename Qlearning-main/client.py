@@ -17,7 +17,7 @@ def choose_action(q_table, state, epsilon) -> int:
 		# Exploration: random action
 		return random.choice(range(len(q_table[state])))
 	else:
-		# Exploration: best action based on the Q-table
+		# Exploitation: best action based on the Q-table
 		state_index = int(state, 2)
 		return max(range(len(q_table[state_index])), key=lambda a: q_table[state_index][a])
 
