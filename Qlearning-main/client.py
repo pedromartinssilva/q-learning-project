@@ -1,7 +1,7 @@
 import connection as con
 import random
 
-def choose_action(q_table, state, epsilon) -> int:
+def epsilon_greedy(q_table, state, epsilon) -> int:
 	"""
 	Chooses an action based on epsilon-greedy policy.
 
@@ -69,13 +69,13 @@ def main():
 	Having the epsilon set to 1 force the algorithm to always take random actions and never use past knowledge.
 	Usually, epsilon is selected as a small number close to 0.
 	"""
-	epsilon = 0.1  	# Exploration rate (0 < epsilon <= 1)
+	epsilon = 0.1  	# Exploration rate
 	"""
 	If we set alpha to zero, the agent learns nothing from new actions.
 	If we set alpha to 1, the agent completely ignores prior knowledge and only values the most recent information.
 	Higher alpha values make Q-values change faster.
 	"""
-	alpha = 0.1		# Learning rate or step size (0 < alpha <= 1)
+	alpha = 0.1		# Learning rate or step size
 	"""
 	If we set gamma to zero, the agent completely ignores the future rewards. Such agents only consider current rewards.
 	If we set gamma to 1, the algorithm would look for high rewards in the long term.
@@ -86,13 +86,13 @@ def main():
     # Main loop
 	for iter in range(num_iter):
 		# Getting initial state and reward
-		state = con.get_initial_state(cn)
+		state = 0
 		total_reward = 0
 		print("Initial state: ", state)
 
 		while not con.is_terminal_state(state):
 			# Selecting action based on epsilon-greedy policy
-			action_index = choose_action(q_table, state, epsilon)
+			action_index = epsilon_greedy(q_table, state, epsilon)
 			action = actions[action_index]
 
 			# Executing the action and getting the next state and reward
