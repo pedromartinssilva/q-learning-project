@@ -63,9 +63,25 @@ def main():
 	num_states = num_platforms * num_directions
 	num_iter = 100
 
-	epsilon = 0.1  	# Exploration rate
-	alpha = 0.1		# Learning rate
-	gamma = 0.9    	# Discount factor
+	"""
+	The epsilon parameter introduces randomness into the algorithm, forcing different actions.
+	If epsilon is set to 0, we never explore but always exploit the knowledge we already have.
+	Having the epsilon set to 1 force the algorithm to always take random actions and never use past knowledge.
+	Usually, epsilon is selected as a small number close to 0.
+	"""
+	epsilon = 0.1  	# Exploration rate (0 < epsilon <= 1)
+	"""
+	If we set alpha to zero, the agent learns nothing from new actions.
+	If we set alpha to 1, the agent completely ignores prior knowledge and only values the most recent information.
+	Higher alpha values make Q-values change faster.
+	"""
+	alpha = 0.1		# Learning rate or step size (0 < alpha <= 1)
+	"""
+	If we set gamma to zero, the agent completely ignores the future rewards. Such agents only consider current rewards.
+	If we set gamma to 1, the algorithm would look for high rewards in the long term.
+	A high gamma value might prevent conversion: summing up non-discounted rewards leads to having high Q-values.
+	"""
+	gamma = 0.9    	# Discount factor 
 
     # Main loop
 	for iter in range(num_iter):
