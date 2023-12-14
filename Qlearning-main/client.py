@@ -1,74 +1,99 @@
 import connection as con
-import numpy as np
+import random
 
-def choose_action(q_table, state, epsilon):
-	if np.random.rand() < epsilon:
-		# Exploração: ação aleatória
-		return np.random.choice(len(q_table[state]))
+def choose_action(q_table, state, epsilon) -> int:
+	"""
+	Chooses an action based on epsilon-greedy policy.
+
+	Parameters:
+		q_table (list): Q-table representing the expected rewards for each action in each state.
+        state (str): Current state in binary format.
+        epsilon (float): Exploration rate.
+	
+	Returns:
+	    int: Index of the selected action.
+	"""
+	if random.random() < epsilon:
+		# Exploration: random action
+		return random.choice(range(len(q_table[state])))
 	else:
-		# Exploração: melhor ação com base na Q-table
+		# Exploration: best action based on the Q-table
 		state_index = int(state, 2)
-		return np.argmax(q_table[state_index, :])
+		return max(range(len(q_table[state_index])), key=lambda a: q_table[state_index][a])
 
 def update_q_table(q_table, state, action, reward, next_state, alpha, gamma):
+	"""
+	Updates the Q-table based on the Q-learning algorithm.
+
+	Parameters:
+		q_table (list): Q-table representing the expected rewards for each action in each state.
+		state (str): Current state in binary format.
+		action (int): Index of the selected action.
+		reward (float): Reward obtained from taking the action.
+		next_state (str): Next state in binary format.
+		alpha (float): Learning rate.
+		gamma (float): Discount factor.
+	"""
 	state_index = int(state, 2)
 	next_state_index = int(next_state, 2)
-	q_predict = q_table[state_index, action]
-	q_target = reward + gamma * np.max(q_table[next_state_index])
-	q_table[state_index, action] += alpha * (q_target - q_predict)
+	q_predict = q_table[state_index][action]
+	q_target = reward + gamma * max(q_table[next_state_index])
+	q_table[state_index][action] += alpha * (q_target - q_predict)
 
 def main():
-	# Estabelecendo a conexão TCP
+	"""
+	The Q-table is updated iteratively based on the rewards obtained from taking actions in the environment.
+	The final Q-table is saved to a file named 'resultado.txt'.
+	"""
+
+	# Establishing TCP connection
 	cn = con.connect(2037)
 
-	# Definindo ações possíveis
+	# Defining possible actions
 	actions = ["left", "right", "jump"]
 	num_actions = len(actions)
 	num_states = 96
 
-	# Inicializando Q-table
-	q_table = np.zero((num_states, num_actions))
+	# Initializing Q-table
+	q_table = [[0.0] * num_actions for _ in range(num_states)]
 
-	# Estabelecendo parâmetros
-	num_platforms 	= 3
-	num_directions 	= 4
-	num_states 		= num_platforms * num_directions
-	num_iter		= 100
+	# Setting parameters
+	num_platforms = 3
+	num_directions = 4
+	num_states = num_platforms * num_directions
+	num_iter = 100
 
-	epsilon = 0.1 # Taxa de exploração
-	alpha	= 0.1 # Taxa de aprendizado
-	gamma	= 0.9 # Fator de desconto		
+	epsilon = 0.1  	# Exploration rate
+	alpha = 0.1		# Learning rate
+	gamma = 0.9    	# Discount factor
 
-	# Loop principal
+    # Main loop
 	for iter in range(num_iter):
-		# Obtendo estado e recompensa
+		# Getting initial state and reward
 		state = con.get_initial_state(cn)
 		total_reward = 0
-		print("Estado inicial: ", state)
+		print("Initial state: ", state)
 
 		while not con.is_terminal_state(state):
-			# Selecionando ação com base na política epsilon-greedy
+			# Selecting action based on epsilon-greedy policy
 			action_index = choose_action(q_table, state, epsilon)
 			action = actions[action_index]
 
-			# Executando a ação e obtendo o próximo estado e recompensa
+			# Executing the action and getting the next state and reward
 			next_state, reward = con.get_state_reward(cn, action)
 
-			# Atualizando a Q-table
-			update_q_table(q_table, state, action, reward, next_state, alpha, gamma)
+			# Updating the Q-table
+			update_q_table(q_table, state, action_index, reward, next_state, alpha, gamma)
 
 			state = next_state
 			total_reward += reward
 
-		# Extraindo informações do estado
-		#platform, direction = int(state[:7], 2), int(state[7:], 2)
-		# print("Plataforma: ", platform)
-		# print("Direção: ", direction)
+		print(f"Iteration {iter + 1}/{num_iter}, Total Reward: {total_reward}")
 
-		print(f"Iteração {num_iter + 1}/{num_iter}, Recompensa: {total_reward}")
-
-	# Salvando Q-table no arquivo 'resultado.txt'
-	np.savetxt("resultado.txt", q_table, fmt="%.6f")
+    # Saving Q-table to the 'resultado.txt' file
+	with open("resultado.txt", "w") as file:
+		for row in q_table:
+			file.write(" ".join(f"{value:.6f}" for value in row) + "\n")
 
 if __name__ == "__main__":
-	main()
+    main()
