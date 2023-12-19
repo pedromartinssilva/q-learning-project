@@ -56,8 +56,6 @@ def main():
 	file_path = "resultado.txt"
 	with open(file_path, 'r') as file:
 		q_table = [list(map(float, line.split())) for line in file]
-
-	print(q_table)
 	
 	# Setting parameters
 	num_episodes = 100
