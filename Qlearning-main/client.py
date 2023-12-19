@@ -58,8 +58,8 @@ def main():
 		q_table = [list(map(float, line.split())) for line in file]
 	
 	# Setting parameters
-	num_episodes = 100
-	num_steps    = 100
+	num_episodes = 1
+	num_steps    = 1000
 
 	epsilon = 0.1	# Exploration rate
 	alpha = 0.1		# Learning rate or step size
@@ -68,7 +68,8 @@ def main():
     # Main loop
 	for episode in range(num_episodes):
 		# Getting initial state and reward
-		action = random.choice(actions)
+		terminal = 0
+		action = "jump"
 		state, reward = con.get_state_reward(cn, action)
 		total_reward = reward
 
@@ -79,6 +80,7 @@ def main():
 
 			# Executing the action and getting the next state and reward
 			next_state, reward = con.get_state_reward(cn, action)
+			if reward == 1000: terminal+=1
 
 			# Updating the Q-table
 			update_q_table(q_table, state, action_index, reward, next_state, alpha, gamma)
@@ -86,12 +88,11 @@ def main():
 			state = next_state
 			total_reward += reward
 
-		print(f"Episode {episode + 1}/{num_episodes}, Total Reward: {total_reward}")
-
+		print(f"In {num_steps} steps, amongois got to the terminal {terminal} times!")
     # Saving Q-table to resultado.txt 
-	with open(file_path, "w") as file:
-		for row in q_table:
-			file.write(" ".join(f"{value:.6f}" for value in row) + "\n")
+	# with open(file_path, "w") as file:
+	# 	for row in q_table:
+	# 		file.write(" ".join(f"{value:.6f}" for value in row) + "\n")
 
 if __name__ == "__main__":
     main()
