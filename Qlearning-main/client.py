@@ -61,7 +61,7 @@ def main():
 	num_platforms = 3
 	num_directions = 4
 	num_states = num_platforms * num_directions
-	num_iter = 100
+	num_episodes = 100
 
 	"""
 	The epsilon parameter introduces randomness into the algorithm, forcing different actions.
@@ -84,7 +84,7 @@ def main():
 	gamma = 0.9    	# Discount factor 
 
     # Main loop
-	for iter in range(num_iter):
+	for episode in range(num_episodes):
 		# Getting initial state and reward
 		action = random.choice(actions)
 		state, reward = con.get_state_reward(cn, action)
@@ -105,7 +105,7 @@ def main():
 			state = next_state
 			total_reward += reward
 
-		print(f"Iteration {iter + 1}/{num_iter}, Total Reward: {total_reward}")
+		print(f"Episode {episode + 1}/{num_episodes}, Total Reward: {total_reward}")
 
     # Saving Q-table to the 'resultado.txt' file
 	with open("resultado.txt", "w") as file:
