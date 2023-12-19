@@ -42,8 +42,8 @@ def update_q_table(q_table, state, action, reward, next_state, alpha, gamma):
 
 def main():
 	"""
-	The Q-table is updated iteratively based on the rewards obtained from taking actions in the environment.
-	The final Q-table is saved to a file named 'resultado.txt'.
+	The Q-table is updated iteratively based on the rewards obtained from the actions taken.
+	The final Q-table is saved to 'resultado.txt'.
 	"""
 
 	# Establishing TCP connection
@@ -63,24 +63,8 @@ def main():
 	num_episodes = 100
 	num_steps    = 100
 
-	"""
-	The epsilon parameter introduces randomness into the algorithm, forcing different actions.
-	If epsilon is set to 0, we never explore but always exploit the knowledge we already have.
-	Having the epsilon set to 1 force the algorithm to always take random actions and never use past knowledge.
-	Usually, epsilon is selected as a small number close to 0.
-	"""
 	epsilon = 0.1	# Exploration rate
-	"""
-	If we set alpha to zero, the agent learns nothing from new actions.
-	If we set alpha to 1, the agent completely ignores prior knowledge and only values the most recent information.
-	Higher alpha values make Q-values change faster.
-	"""
 	alpha = 0.1		# Learning rate or step size
-	"""
-	If we set gamma to zero, the agent completely ignores the future rewards. Such agents only consider current rewards.
-	If we set gamma to 1, the algorithm would look for high rewards in the long term.
-	A high gamma value might prevent conversion: summing up non-discounted rewards leads to having high Q-values.
-	"""
 	gamma = 0.9		# Discount factor 
 
     # Main loop
@@ -106,7 +90,7 @@ def main():
 
 		print(f"Episode {episode + 1}/{num_episodes}, Total Reward: {total_reward}")
 
-    # Saving Q-table to the 'resultado.txt' file
+    # Saving Q-table to resultado.txt 
 	with open(file_path, "w") as file:
 		for row in q_table:
 			file.write(" ".join(f"{value:.6f}" for value in row) + "\n")
