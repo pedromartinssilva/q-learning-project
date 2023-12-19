@@ -86,8 +86,9 @@ def main():
     # Main loop
 	for iter in range(num_iter):
 		# Getting initial state and reward
-		state = 0
-		total_reward = 0
+		action = random.choice(actions)
+		state, reward = con.get_state_reward(cn, action)
+		total_reward = reward
 		print("Initial state: ", state)
 
 		while not con.is_terminal_state(state):
