@@ -13,12 +13,12 @@ def epsilon_greedy(q_table, state, epsilon) -> int:
 	Returns:
 	    int: Index of the selected action.
 	"""
+	state_index = int(state, 2)
 	if random.random() < epsilon:
 		# Exploration: random action
-		return random.choice(range(len(q_table[state])))
+		return random.choice(range(len(q_table[state_index])))
 	else:
 		# Exploitation: best action based on the Q-table
-		state_index = int(state, 2)
 		return max(range(len(q_table[state_index])), key=lambda a: q_table[state_index][a])
 
 def update_q_table(q_table, state, action, reward, next_state, alpha, gamma):
@@ -51,12 +51,14 @@ def main():
 
 	# Defining possible actions
 	actions = ["left", "right", "jump"]
-	num_actions = len(actions)
-	num_states = 96
 
 	# Initializing Q-table
-	q_table = [[0.0] * num_actions for _ in range(num_states)]
+	file_path = "resultado.txt"
+	with open(file_path, 'r') as file:
+		q_table = [list(map(float, line.split())) for line in file]
 
+	print(q_table)
+	
 	# Setting parameters
 	num_episodes = 100
 	num_steps    = 100
@@ -67,7 +69,7 @@ def main():
 	Having the epsilon set to 1 force the algorithm to always take random actions and never use past knowledge.
 	Usually, epsilon is selected as a small number close to 0.
 	"""
-	epsilon = 0.1  	# Exploration rate
+	epsilon = 0.1	# Exploration rate
 	"""
 	If we set alpha to zero, the agent learns nothing from new actions.
 	If we set alpha to 1, the agent completely ignores prior knowledge and only values the most recent information.
@@ -79,7 +81,7 @@ def main():
 	If we set gamma to 1, the algorithm would look for high rewards in the long term.
 	A high gamma value might prevent conversion: summing up non-discounted rewards leads to having high Q-values.
 	"""
-	gamma = 0.9    	# Discount factor 
+	gamma = 0.9		# Discount factor 
 
     # Main loop
 	for episode in range(num_episodes):
@@ -87,7 +89,6 @@ def main():
 		action = random.choice(actions)
 		state, reward = con.get_state_reward(cn, action)
 		total_reward = reward
-		print("Initial state: ", state)
 
 		for _ in range(num_steps):
 			# Selecting action based on epsilon-greedy policy
@@ -106,7 +107,7 @@ def main():
 		print(f"Episode {episode + 1}/{num_episodes}, Total Reward: {total_reward}")
 
     # Saving Q-table to the 'resultado.txt' file
-	with open("resultado.txt", "w") as file:
+	with open(file_path, "w") as file:
 		for row in q_table:
 			file.write(" ".join(f"{value:.6f}" for value in row) + "\n")
 
