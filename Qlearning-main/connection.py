@@ -3,7 +3,7 @@ import time
 import socket
 
 
-#Cria a conexao TCP
+# Creating TCP connection
 def connect(port):
     try:
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -17,12 +17,11 @@ def connect(port):
     else:
         print('continuando')
 
-
-#Da o estado e a recompensa que o agente recebeu
+# Gives the status and the reward the agent received
 def get_state_reward(s , act):
     s.send(str(act).encode())
     data = "" 
-    data_recv = False;
+    data_recv = False
     while(not data_recv):
         data = s.recv(1024).decode()
         try:
@@ -31,7 +30,7 @@ def get_state_reward(s , act):
         except:
             data_recv = False
 
-    #convert the data to decimal int
+    # Converting the data to decimal int
     estado = data['estado']
     recompensa = data['recompensa']
 
