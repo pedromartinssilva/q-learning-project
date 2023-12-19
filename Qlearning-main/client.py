@@ -59,7 +59,7 @@ def main():
 
 	# Setting parameters
 	num_episodes = 100
-	num_steps = 100
+	num_steps    = 100
 
 	"""
 	The epsilon parameter introduces randomness into the algorithm, forcing different actions.
@@ -89,7 +89,7 @@ def main():
 		total_reward = reward
 		print("Initial state: ", state)
 
-		for step in range(num_steps):
+		for _ in range(num_steps):
 			# Selecting action based on epsilon-greedy policy
 			action_index = epsilon_greedy(q_table, state, epsilon)
 			action = actions[action_index]
