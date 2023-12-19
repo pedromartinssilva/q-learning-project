@@ -58,9 +58,6 @@ def main():
 	q_table = [[0.0] * num_actions for _ in range(num_states)]
 
 	# Setting parameters
-	num_platforms = 3
-	num_directions = 4
-	num_states = num_platforms * num_directions
 	num_episodes = 100
 
 	"""
